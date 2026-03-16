@@ -99,6 +99,18 @@ struct VimState {
     bool replacePending = false;
     bool visualReplacePending = false;
 
+    OperationType pendingOp = OP_NONE;
+    bool awaitingMotion = false;
+    bool awaitingTextObject = false;
+    bool textObjectInner = false;
+
+    char pendingMotion = 0;
+
+    bool awaitingMotionChar = false;
+    bool awaitingSearchChar = false;
+
+    int count = 0;
+
     std::map<char, std::string> registers;
     char defaultRegister = '"';
     bool deleteToBlackhole = false;
@@ -151,6 +163,17 @@ struct VimState {
         lastSearchTerm.clear();
         useRegex = false;
         lastSearchMatchCount = -1;
+    }
+
+    void resetParser() {
+        count = 0;
+        pendingOp = OP_NONE;
+        awaitingMotion = false;
+        awaitingTextObject = false;
+        textObjectInner = false;
+        pendingMotion = 0;
+        awaitingMotionChar = false;
+        awaitingSearchChar = false;
     }
 
     void resetPending() {

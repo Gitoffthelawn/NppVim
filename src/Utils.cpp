@@ -606,3 +606,54 @@ std::string Utils::getTextRange(HWND h, int start, int end){
     ::SendMessage(h, SCI_GETTEXTRANGEFULL, 0, (LPARAM)&tr);
     return std::string(buffer.data());
 }
+
+void Utils::deleteMotion(HWND hwnd, char motion, int count)
+{
+    int start = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
+
+    Motion::execute(hwnd, motion, count);
+
+    int end = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
+
+    if (end < start)
+        std::swap(start, end);
+
+    SendMessage(hwnd, SCI_SETSEL, start, end);
+    SendMessage(hwnd, SCI_REPLACESEL, 0, (LPARAM)"");
+}
+
+void Utils::yankMotion(HWND hwnd, char motion, int count)
+{
+    int start = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
+
+    Motion::execute(hwnd, motion, count);
+
+    int end = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
+
+    if (end < start)
+        std::swap(start, end);
+
+    int len = end - start;
+
+    if (len <= 0)
+        return;
+
+    char* buffer = new char[len + 1];
+
+    SendMessage(hwnd, SCI_GETTEXTRANGEFULL, 0, (LPARAM)buffer);
+
+    buffer[len] = '\0';
+
+    state.registers[state.defaultRegister] = buffer;
+
+    delete[] buffer;
+
+    SendMessage(hwnd, SCI_SETSEL, start, start);
+}
+
+void Utils::changeMotion(HWND hwnd, char motion, int count)
+{
+    deleteMotion(hwnd, motion, count);
+
+    state.mode = INSERT;
+}

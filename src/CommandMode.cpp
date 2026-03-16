@@ -284,10 +284,15 @@ void CommandMode::handleColonCommand(HWND hwndEdit, const std::string &cmd) {
   }
 
   for (char c : cmd) {
-    if (!g_commandKeymap->handleKey(hwndEdit, c)) {
-        break;
-    }
+      g_commandKeymap->handleKey(hwndEdit, c);
+      if (!g_commandKeymap->isWaitingForMoreKeys())
+          break;
   }
+
+  if (g_commandKeymap->isWaitingForMoreKeys()) {
+      g_commandKeymap->handleTimer();
+  }
+
   g_commandKeymap->reset();
   return;
 

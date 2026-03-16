@@ -89,6 +89,10 @@ public:
     static std::string getTextRange(HWND h, int start, int end);
     static int sci(HWND h, int msg, WPARAM w = 0, LPARAM l = 0);
 
+    static void deleteMotion(HWND hwnd, char motion, int count);
+    static void yankMotion(HWND hwnd, char motion, int count);
+    static void changeMotion(HWND hwnd, char motion, int count);
+
   private:
     static NppData nppData;
     friend void setNppData(NppData data);

@@ -366,3 +366,23 @@ void Motion::toggleCase(HWND hwndEdit, int count) {
     if(state.mode==NORMAL)
         Utils::sci(hwndEdit,SCI_SETEMPTYSELECTION,end);
 }
+
+void Motion::execute(HWND hwnd, char motion, int count)
+{
+    switch (motion)
+    {
+        case 'h': charLeft(hwnd, count); break;
+        case 'l': charRight(hwnd, count); break;
+        case 'j': lineDown(hwnd, count); break;
+        case 'k': lineUp(hwnd, count); break;
+
+        case 'w': wordRight(hwnd, count); break;
+        case 'b': wordLeft(hwnd, count); break;
+        case 'e': wordEnd(hwnd, count); break;
+
+        case '0': lineStart(hwnd, count); break;
+        case '$': lineEnd(hwnd, count); break;
+
+        case 'G': documentEnd(hwnd); break;
+    }
+}

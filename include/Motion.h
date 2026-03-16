@@ -32,6 +32,7 @@ public:
     static void pageDown(HWND hwndEdit);
     static void matchPair(HWND hwndEdit);
     static void toggleCase(HWND hwndEdit, int count);
+    static void execute(HWND hwnd, char motion, int count);
 };
 
 extern Motion motion;

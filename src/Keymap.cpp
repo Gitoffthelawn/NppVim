@@ -74,6 +74,7 @@ bool Keymap::processKey(HWND hwnd, char key, int count) {
 
     if (it != currentNode->children.end()) {
         currentNode = it->second;
+        savedHwnd = hwnd;
         pendingKeys.push_back(key);
 
         if (currentNode->isLeaf && currentNode->handler) {
@@ -84,10 +85,8 @@ bool Keymap::processKey(HWND hwnd, char key, int count) {
                 reset();
                 return true;
             }
-
-            return true;
-        }
         return true;
+        }
     }
 
     if (currentNode != root) {
@@ -102,6 +101,7 @@ bool Keymap::processKey(HWND hwnd, char key, int count) {
             return true;
         }
 
+        currentNode = root;
         return processKey(hwnd, key, count);
     }
     return false;

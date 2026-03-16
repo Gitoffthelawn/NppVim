@@ -35,6 +35,8 @@ NormalMode::NormalMode(VimState& state) : state(state) {
 
 void NormalMode::setupKeyMaps() {
     auto& k = *g_normalKeymap;
+    if (state.mode == COMMAND)
+        return;
 
     k.motion("h", 'h', "Move cursor left", [](HWND h, int c) { Motion::charLeft(h, c); })
      .motion("j", 'j', "Move cursor down", [](HWND h, int c) { Motion::lineDown(h, c); })
@@ -312,106 +314,106 @@ void NormalMode::setupKeyMaps() {
          state.recordLastOp(OP_MOTION, c, 'c');
      });
 
-    k.set("iw", "Inner word", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'i', 'w');
-        state.resetPending();
-    })
-    .set("aw", "Around word", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'a', 'w');
-        state.resetPending();
-    })
-    .set("iW", "Inner WORD", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'i', 'W');
-        state.resetPending();
-    })
-    .set("aW", "Around WORD", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'a', 'W');
-        state.resetPending();
-    })
-    .set("ip", "Inner paragraph", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'i', 'p');
-        state.resetPending();
-    })
-    .set("ap", "Around paragraph", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'a', 'p');
-        state.resetPending();
-    })
-    .set("is", "Inner sentence", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'i', 's');
-        state.resetPending();
-    })
-    .set("as", "Around sentence", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'a', 's');
-        state.resetPending();
-    })
-    .set("i(", "Inner parentheses", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'i', '(');
-        state.resetPending();
-    })
-    .set("a(", "Around parentheses", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'a', '(');
-        state.resetPending();
-    })
-    .set("i[", "Inner brackets", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'i', '[');
-        state.resetPending();
-    })
-    .set("a[", "Around brackets", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'a', '[');
-        state.resetPending();
-    })
-    .set("i{", "Inner braces", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'i', '{');
-        state.resetPending();
-    })
-    .set("a{", "Around braces", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'a', '{');
-        state.resetPending();
-    })
-    .set("i\"", "Inner double quotes", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'i', '"');
-        state.resetPending();
-    })
-    .set("a\"", "Around double quotes", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'a', '"');
-        state.resetPending();
-    })
-    .set("i'", "Inner single quotes", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'i', '\'');
-        state.resetPending();
-    })
-    .set("a'", "Around single quotes", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'a', '\'');
-        state.resetPending();
-    })
-    .set("i`", "Inner backticks", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'i', '`');
-        state.resetPending();
-    })
-    .set("a`", "Around backticks", [this](HWND h, int c) {
-        if (!state.opPending) return;
-        TextObject t; t.apply(h, state, state.opPending, 'a', '`');
-        state.resetPending();
-    });
+    // k.set("iw", "Inner word", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'i', 'w');
+    //     state.resetPending();
+    // })
+    // .set("aw", "Around word", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'a', 'w');
+    //     state.resetPending();
+    // })
+    // .set("iW", "Inner WORD", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'i', 'W');
+    //     state.resetPending();
+    // })
+    // .set("aW", "Around WORD", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'a', 'W');
+    //     state.resetPending();
+    // })
+    // .set("ip", "Inner paragraph", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'i', 'p');
+    //     state.resetPending();
+    // })
+    // .set("ap", "Around paragraph", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'a', 'p');
+    //     state.resetPending();
+    // })
+    // .set("is", "Inner sentence", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'i', 's');
+    //     state.resetPending();
+    // })
+    // .set("as", "Around sentence", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'a', 's');
+    //     state.resetPending();
+    // })
+    // .set("i(", "Inner parentheses", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'i', '(');
+    //     state.resetPending();
+    // })
+    // .set("a(", "Around parentheses", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'a', '(');
+    //     state.resetPending();
+    // })
+    // .set("i[", "Inner brackets", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'i', '[');
+    //     state.resetPending();
+    // })
+    // .set("a[", "Around brackets", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'a', '[');
+    //     state.resetPending();
+    // })
+    // .set("i{", "Inner braces", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'i', '{');
+    //     state.resetPending();
+    // })
+    // .set("a{", "Around braces", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'a', '{');
+    //     state.resetPending();
+    // })
+    // .set("i\"", "Inner double quotes", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'i', '"');
+    //     state.resetPending();
+    // })
+    // .set("a\"", "Around double quotes", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'a', '"');
+    //     state.resetPending();
+    // })
+    // .set("i'", "Inner single quotes", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'i', '\'');
+    //     state.resetPending();
+    // })
+    // .set("a'", "Around single quotes", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'a', '\'');
+    //     state.resetPending();
+    // })
+    // .set("i`", "Inner backticks", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'i', '`');
+    //     state.resetPending();
+    // })
+    // .set("a`", "Around backticks", [this](HWND h, int c) {
+    //     if (!state.opPending) return;
+    //     TextObject t; t.apply(h, state, state.opPending, 'a', '`');
+    //     state.resetPending();
+    // });
 
 
     k.set("i", "Insert mode", [this](HWND h, int c) {
@@ -888,10 +890,10 @@ void NormalMode::setupKeyMaps() {
          Utils::setStatus(TEXT("-- Set mark --"));
      })
     .set("``", "Jump back", [this](HWND h, int c) {
-        if (state.jumpList.size() < 2) return;
-        int last = state.jumpList.size() - 1;
-        std::swap(state.jumpList[last], state.jumpList[last - 1]);
-        auto jump = state.jumpList[last];
+        if (state.jumpList.empty()) return;
+
+        auto jump = state.jumpList.back();
+
         if (jump.position != -1) {
             long pos = Utils::caretPos(h);
             int line = Utils::caretLine(h);
@@ -924,16 +926,18 @@ void NormalMode::setupKeyMaps() {
          Utils::setStatus(TEXT("-- Jump to mark (line start) --"));
      })
      .set("''", "Jump to last line", [this](HWND h, int c) {
-         if (state.jumpList.size() < 2) return;
-         int last = state.jumpList.size() - 1;
-         std::swap(state.jumpList[last], state.jumpList[last - 1]);
-         auto jump = state.jumpList[last];
-         if (jump.lineNumber != -1) {
-             int target = ::SendMessage(h, SCI_GETLINEINDENTPOSITION, jump.lineNumber, 0);
-             ::SendMessage(h, SCI_GOTOPOS, target, 0);
-             ::SendMessage(h, SCI_SETSEL, target, target);
-             ::SendMessage(h, SCI_SCROLLCARET, 0, 0);
-         }
+        if (state.jumpList.empty()) return;
+
+        auto jump = state.jumpList.back();
+        if (jump.lineNumber != -1) {
+            int target = ::SendMessage(h, SCI_GETLINEINDENTPOSITION, jump.lineNumber, 0);
+            long pos = Utils::caretPos(h);
+            int line = Utils::caretLine(h);
+            state.recordJump(pos, line);
+            ::SendMessage(h, SCI_GOTOPOS, target, 0);
+            ::SendMessage(h, SCI_SETSEL, target, target);
+            ::SendMessage(h, SCI_SCROLLCARET, 0, 0);
+        }
      });
 
     k.set(">", "Indent", [this](HWND h, int c) {
@@ -1498,37 +1502,31 @@ void NormalMode::handleKey(HWND hwnd, char c) {
         return;
     }
 
-    if (state.textObjectPending) {
-        char modifier = state.textObjectPending;
-        char op = state.opPending;
+    // if (state.textObjectPending) {
+    //     char modifier = state.textObjectPending;
+    //     char op = state.opPending;
 
-        state.textObjectPending = 0;
-        state.opPending = 0;
+    //     state.textObjectPending = 0;
+    //     state.opPending = 0;
 
-        TextObject textObj;
-        textObj.apply(hwnd, state, op, modifier, c);
-        state.repeatCount = 0;
-        return;
-    }
+    //     TextObject textObj;
+    //     textObj.apply(hwnd, state, op, modifier, c);
+    //     state.repeatCount = 0;
+    //     return;
+    // }
 
-    if ((state.opPending == 'd' || state.opPending == 'c' || state.opPending == 'y' ||
-         (state.mode == VISUAL && state.opPending == 'v')) &&
-        (c == 'i' || c == 'a')) {
-        state.textObjectPending = c;
-        return;
-    }
+    // if ((state.opPending == 'd' || state.opPending == 'c' || state.opPending == 'y' || state.opPending == '~' ||
+    //      (state.mode == VISUAL && state.opPending == 'v')) &&
+    //     (c == 'i' || c == 'a')) {
+    //     state.textObjectPending = c;
 
-    if (g_normalKeymap) {
-        bool handled = g_normalKeymap->handleKey(hwnd, c);
-
-        if (handled)
-            return;
-
-        if (g_normalKeymap->isWaitingForMoreKeys())
-            return;
-    }
-    
-    if (!state.opPending && (c == 'd' || c == 'c' || c == 'y')) {
+    //     if (g_normalKeymap)
+    //         g_normalKeymap->reset();
+    //     return;
+    // }
+        
+    if (!state.opPending && !g_normalKeymap->isWaitingForMoreKeys() &&
+        (c == 'd' || c == 'c' || c == 'y')) {
         state.lastYankLinewise = false;
         state.opPending = c;
         Utils::setStatus(
@@ -1539,21 +1537,34 @@ void NormalMode::handleKey(HWND hwnd, char c) {
         return;
     }
 
-     if (state.opPending && !state.textObjectPending && !(g_normalKeymap && g_normalKeymap->isWaitingForMoreKeys())) {
-        if (c == 'w' || c == 'W' || c == 'b' || c == 'B' || c == 'e' || c == 'E' ||
-            c == 'h' || c == 'l' || c == 'j' || c == 'k' ||
-            c == '$' || c == '^' || c == '0' || c == 'G' || c == '%' ||
-            c == '{' || c == '}' || c == '_') {
+    if (state.opPending && !state.textObjectPending) {
+
+        if (std::strchr("wWbBeEhljk$^0G%{}_()", c)) {
 
             int count = (state.repeatCount > 0) ? state.repeatCount : 1;
+
             Utils::beginUndo(hwnd);
             applyOperatorToMotion(hwnd, state.opPending, c, count);
             Utils::endUndo(hwnd);
 
             state.opPending = 0;
             state.repeatCount = 0;
+
+            if (g_normalKeymap)
+                g_normalKeymap->reset();
+
             return;
         }
+    }
+
+    if (g_normalKeymap) {
+        bool handled = g_normalKeymap->handleKey(hwnd, c);
+
+        if (handled)
+            return;
+
+        if (g_normalKeymap->isWaitingForMoreKeys())
+            return;
     }
 
     if (state.mode == VISUAL && (c == 'i' || c == 'a')) {
